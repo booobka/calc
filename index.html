@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
             margin-bottom: 20px;
             color: #333;
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -20,6 +22,7 @@
             align-items: center;
             min-height: 100vh;
         }
+
         .container {
             background-color: #ffffff;
             padding: 25px;
@@ -30,6 +33,7 @@
             width: 100%;
             margin-bottom: 20px;
         }
+
         .history-container {
             background-color: #ffffff;
             padding: 25px;
@@ -40,6 +44,7 @@
             width: 100%;
             margin-bottom: 20px;
         }
+
         input {
             text-align: center;
             width: 80%;
@@ -50,10 +55,12 @@
             font-size: 16px;
             transition: border-color 0.3s ease;
         }
+
         input:focus {
             border-color: #007bff;
             outline: none;
         }
+
         button {
             background-color: #007bff;
             color: white;
@@ -65,24 +72,30 @@
             margin-top: 15px;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #0056b3;
         }
-        p, n {
+
+        p,
+        n {
             font-size: 18px;
             margin: 10px 0;
             color: #555;
         }
+
         #result {
             font-weight: bold;
             color: #007bff;
             font-size: 20px;
         }
+
         #message2 {
             color: #28a745;
             font-style: italic;
             margin-top: 10px;
         }
+
         .history-item {
             margin-bottom: 10px;
             padding: 10px;
@@ -90,25 +103,30 @@
             border-radius: 5px;
             background-color: #f9f9f9;
         }
+
         .history-item p {
             margin: 5px 0;
         }
+
         .comparison {
             font-weight: bold;
             color: #333;
             margin-top: 10px;
         }
+
         .best-offer {
             font-weight: bold;
             color: #28a745;
             margin-top: 20px;
             font-size: 18px;
         }
+
         .add-button {
             margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Калькулятор стоимости килограмма товара</h1>
@@ -118,9 +136,9 @@
         <button onclick="func()">Рассчитать</button>
 
         <p></p>
-        <n id="result"></n> 
-        <n id="message1"></n> 
-        <p id="message2"></p> 
+        <n id="result"></n>
+        <n id="message1"></n>
+        <p id="message2"></p>
     </div>
 
     <div class="history-container">
@@ -144,9 +162,9 @@
             // Проверяем, что введены числа
             if (isNaN(num1) || isNaN(num2)) {
                 document.getElementById("message2").innerHTML = "Ошибка: введите вес и цену.";
-                document.getElementById("result").innerHTML = ""; // Очищаем результат
-                document.getElementById("message1").innerHTML = ""; // Очищаем единицы измерения
-                return; // Прерываем выполнение функции
+                document.getElementById("result").innerHTML = "";
+                document.getElementById("message1").innerHTML = "";
+                return;
             }
 
             // Если название не введено, используем "Предложение X"
@@ -158,21 +176,40 @@
             var result = num2 / num1 * 1000;
 
             // Выводим результат
-            document.getElementById("result").innerHTML = result.toFixed(2); // Округляем до двух знаков
-            document.getElementById("message1").innerHTML = "руб/кило"; // Добавляем единицы измерения
-            document.getElementById("message2").innerHTML = "Поздравляю, Вы великолепны!";
+            document.getElementById("result").innerHTML = result.toFixed(2);
+            document.getElementById("message1").innerHTML = "руб/кило";
+
+            // Логика сообщений в зависимости от стоимости
+            let message;
+            if (result <= 1000) {
+                message = "Поздравляю, вас не наебали!";
+            } else if (result <= 1450) {
+                message = "Возможно, вас немного наебывают...";
+            } else if (result <= 1900) {
+                message = "Скорее всего, вас наебывают!";
+            } else if (result <= 2350) {
+                message = "Вас точно наебывают!";
+            } else if (result <= 2800) {
+                message = "Вас сильно наебывают!!";
+            } else if (result <= 3250) {
+                message = "Вас очень сильно наебывают!!!";
+            } else if (result <= 3700) {
+                message = "Вас наебывают по полной!!!!";
+            } else if (result <= 4000) {
+                message = "Вас наебывают максимально!!!!!";
+            } else {
+                message = "Это просто космический наеб!!!!! Бегите!";
+            }
+
+            document.getElementById("message2").innerHTML = message;
 
             // Добавляем запись в историю
             history.push({ name: name, weight: num1, price: num2, result: result, order: offerCounter });
-            offerCounter++; // Увеличиваем общий счетчик
+            offerCounter++;
 
-            // Обновляем историю
+            // Обновляем историю и сравнение
             updateHistory();
-
-            // Сравниваем предложения
             compareOffers();
-
-            // Находим самое выгодное предложение
             updateBestOffer();
 
             // Очищаем поля ввода
@@ -235,4 +272,5 @@
         }
     </script>
 </body>
+
 </html>
