@@ -176,32 +176,82 @@
             var result = num2 / num1 * 1000;
 
             // Выводим результат
-            document.getElementById("result").innerHTML = result.toFixed(2);
+            document.getElementById("result").innerHTML = result.toFixed(0);
             document.getElementById("message1").innerHTML = "руб/кило";
 
-            // Логика сообщений в зависимости от стоимости
+            // Элемент сообщения
+            var messageElement = document.getElementById("message2");
+
+            // Логика сообщений и стилей в зависимости от стоимости
             let message;
-            if (result <= 1000) {
-                message = "Поздравляю, вас не наебали!";
+            if (result <= 50) {
+                message = "Скорее всего гречка или картошка, то что нужно!";
+                messageElement.style.color = "green";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px"; // Базовый размер из CSS
+            } else if (result <= 250) {
+                message = "Выглядит не слишком дорого";
+                messageElement.style.color = "green";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
+            } else if (result <= 500) {
+                message = "Вероятно Вы можете себе это позволить";
+                messageElement.style.color = "green";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
+            } else if (result <= 800) {
+                message = "Внимательно посчитайте шекели в кошеле";
+                messageElement.style.color = "orange";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
+            } else if (result <= 1000) {
+                message = "Сохраняйте бдительность! Могут наебать!";
+                messageElement.style.color = "orange";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
             } else if (result <= 1450) {
                 message = "Возможно, вас немного наебывают...";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
             } else if (result <= 1900) {
                 message = "Скорее всего, вас наебывают!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
             } else if (result <= 2350) {
                 message = "Вас точно наебывают!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
             } else if (result <= 2800) {
                 message = "Вас сильно наебывают!!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "transparent";
+                messageElement.style.fontSize = "18px";
             } else if (result <= 3250) {
                 message = "Вас очень сильно наебывают!!!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "#333"; // Темно-серый фон
+                messageElement.style.fontSize = "21.6px"; // 18px + 20%
             } else if (result <= 3700) {
                 message = "Вас наебывают по полной!!!!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "#333";
+                messageElement.style.fontSize = "21.6px";
             } else if (result <= 4000) {
                 message = "Вас наебывают максимально!!!!!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "#333";
+                messageElement.style.fontSize = "21.6px";
             } else {
                 message = "Это просто космический наеб!!!!! Бегите!";
+                messageElement.style.color = "red";
+                messageElement.style.backgroundColor = "#333";
+                messageElement.style.fontSize = "21.6px";
             }
 
-            document.getElementById("message2").innerHTML = message;
+            messageElement.innerHTML = message;
 
             // Добавляем запись в историю
             history.push({ name: name, weight: num1, price: num2, result: result, order: offerCounter });
@@ -228,7 +278,7 @@
                 historyItem.innerHTML = `
                     <p><strong>${item.name}</strong> (№${item.order})</p>
                     <p>Вес: ${item.weight} г, Цена: ${item.price} руб</p>
-                    <p>Стоимость за кило: <strong>${item.result.toFixed(2)} руб/кило</strong></p>
+                    <p>Итого: <strong>${item.result.toFixed(0)} руб/кило</strong></p>
                 `;
                 historyDiv.appendChild(historyItem);
             });
