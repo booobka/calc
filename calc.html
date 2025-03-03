@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор стоимости килограмма товара</title>
+    <style>
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .history-container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        input {
+            text-align: center;
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p, n {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #555;
+        }
+        #result {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 20px;
+        }
+        #message2 {
+            color: #28a745;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .history-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .history-item p {
+            margin: 5px 0;
+        }
+        .comparison {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+        .best-offer {
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .add-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор стоимости килограмма товара</h1>
+        <input id="num1" placeholder="Вес в граммах" />
+        <input id="num2" placeholder="Цена в рублях" />
+        <input id="name" placeholder="Наименование товара (необязательно)" />
+        <button onclick="func()">Рассчитать</button>
+
+        <p></p>
+        <n id="result"></n> 
+        <n id="message1"></n> 
+        <p id="message2"></p> 
+    </div>
+
+    <div class="history-container">
+        <h2>История расчетов</h2>
+        <div id="history"></div>
+        <div id="comparison" class="comparison"></div>
+        <div id="bestOffer" class="best-offer"></div>
+        <button class="add-button" onclick="focusFirstInput()">Добавить</button>
+    </div>
+
+    <script>
+        let history = [];
+        let offerCounter = 1; // Общий счетчик для всех предложений
+
+        function func() {
+            // Получаем значения из полей ввода
+            var num1 = Number(document.getElementById("num1").value);
+            var num2 = Number(document.getElementById("num2").value);
+            var name = document.getElementById("name").value.trim();
+
+            // Проверяем, что введены числа
+            if (isNaN(num1) || isNaN(num2)) {
+                document.getElementById("message2").innerHTML = "Ошибка: введите вес и цену.";
+                document.getElementById("result").innerHTML = ""; // Очищаем результат
+                document.getElementById("message1").innerHTML = ""; // Очищаем единицы измерения
+                return; // Прерываем выполнение функции
+            }
+
+            // Если название не введено, используем "Предложение X"
+            if (name === "") {
+                name = "Предложение " + offerCounter;
+            }
+
+            // Вычисляем стоимость за килограмм
+            var result = num2 / num1 * 1000;
+
+            // Выводим результат
+            document.getElementById("result").innerHTML = result.toFixed(2); // Округляем до двух знаков
+            document.getElementById("message1").innerHTML = "руб/кило"; // Добавляем единицы измерения
+            document.getElementById("message2").innerHTML = "Поздравляю, вас не наебали!";
+
+            // Добавляем запись в историю
+            history.push({ name: name, weight: num1, price: num2, result: result, order: offerCounter });
+            offerCounter++; // Увеличиваем общий счетчик
+
+            // Обновляем историю
+            updateHistory();
+
+            // Сравниваем предложения
+            compareOffers();
+
+            // Находим самое выгодное предложение
+            updateBestOffer();
+
+            // Очищаем поля ввода
+            document.getElementById("num1").value = "";
+            document.getElementById("num2").value = "";
+            document.getElementById("name").value = "";
+        }
+
+        function updateHistory() {
+            var historyDiv = document.getElementById("history");
+            historyDiv.innerHTML = ""; // Очищаем историю перед обновлением
+
+            history.forEach((item) => {
+                var historyItem = document.createElement("div");
+                historyItem.className = "history-item";
+                historyItem.innerHTML = `
+                    <p><strong>${item.name}</strong> (№${item.order})</p>
+                    <p>Вес: ${item.weight} г, Цена: ${item.price} руб</p>
+                    <p>Стоимость за кило: <strong>${item.result.toFixed(2)} руб/кило</strong></p>
+                `;
+                historyDiv.appendChild(historyItem);
+            });
+        }
+
+        function compareOffers() {
+            if (history.length < 2) return; // Нужно минимум два предложения для сравнения
+
+            var lastOffer = history[history.length - 1];
+            var previousOffer = history[history.length - 2];
+
+            var differenceRub = lastOffer.result - previousOffer.result;
+            var differencePercent = ((differenceRub / previousOffer.result) * 100).toFixed(2);
+
+            var comparisonText = `
+                <p>Разница между предложениями:</p>
+                <p>${differenceRub.toFixed(2)} руб/кило (${differencePercent}%)</p>
+                <p>${differenceRub > 0 ? "Предыдущее предложение выгоднее." : "Новое предложение выгоднее."}</p>
+            `;
+
+            document.getElementById("comparison").innerHTML = comparisonText;
+        }
+
+        function updateBestOffer() {
+            if (history.length < 2) {
+                document.getElementById("bestOffer").innerHTML = ""; // Очищаем, если предложений меньше двух
+                return;
+            }
+
+            // Находим самое выгодное предложение (с минимальной стоимостью за килограмм)
+            let bestOffer = history.reduce((prev, curr) => (curr.result < prev.result ? curr : prev));
+
+            // Выводим самое выгодное предложение
+            document.getElementById("bestOffer").innerHTML = `
+                Самое выгодное предложение: <strong>${bestOffer.name} (№${bestOffer.order})</strong> — ${bestOffer.result.toFixed(2)} руб/кило
+            `;
+        }
+
+        function focusFirstInput() {
+            document.getElementById("num1").focus(); // Переносим фокус на первое поле ввода (вес)
+        }
+    </script>
+</body>
+</html>
